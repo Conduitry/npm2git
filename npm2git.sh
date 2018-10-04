@@ -4,13 +4,9 @@ set -e
 # go to root of repository
 cd $(git rev-parse --show-toplevel)
 
-# extract package name and version from package.json
-NAME=$(node -e 'console.log(require("./package.json").name)')
-VERSION=$(node -e 'console.log(require("./package.json").version)')
-
-# remove devDependencies and scripts.prepare
+# extract package name and version from package.json, remove devDependencies and scripts.prepare
 ORIG_PKG="$(cat package.json)"
-node -e '
+read NAME VERSION < <(node -e '
 const fs = require("fs");
 const pkg = JSON.parse(fs.readFileSync("package.json"));
 delete pkg.devDependencies;
@@ -18,7 +14,8 @@ if (pkg.scripts) {
 	delete pkg.scripts.prepare;
 }
 fs.writeFileSync("package.json", JSON.stringify(pkg, null, "\t") + "\n");
-'
+console.log(pkg.name + " " + pkg.version);
+')
 
 # determine current branch name, and create new temporary branch
 ORIG_BRANCH=$(git symbolic-ref --short HEAD)
@@ -38,5 +35,5 @@ git tag v${VERSION} -a -m "v${VERSION}"
 # return to original state
 git reset ${ORIG_BRANCH}
 git checkout ${ORIG_BRANCH}
-echo "${ORIG_PKG}" > package.json
+cat <<< "${ORIG_PKG}" > package.json
 git branch -D ${TEMP_BRANCH}
