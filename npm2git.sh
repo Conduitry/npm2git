@@ -4,6 +4,9 @@ set -e
 # go to root of repository
 cd $(git rev-parse --show-toplevel)
 
+# get commit id
+COMMIT_ID="$(git rev-parse HEAD)"
+
 # extract package name and version from package.json, remove devDependencies and scripts.prepare
 ORIG_PKG="$(cat package.json)"
 read NAME VERSION < <(node -e '
@@ -29,8 +32,8 @@ git add -f $(tar tf ${NAME}-${VERSION}.tgz | cut -c 9-)
 rm ${NAME}-${VERSION}.tgz
 
 # commit and tag
-git commit -m "Release v${VERSION}"
-git tag v${VERSION} -a -m "v${VERSION}"
+git commit -m "v${VERSION} @ ${COMMIT_ID}"
+git tag v${VERSION} -a -m "v${VERSION} @ ${COMMIT_ID}"
 
 # return to original state
 git reset ${ORIG_BRANCH}
