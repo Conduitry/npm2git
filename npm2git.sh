@@ -22,7 +22,8 @@ read NAME VERSION < <(node -e '
 # determine current branch name, and create new temporary branch
 ORIG_BRANCH=$(git symbolic-ref --short HEAD)
 TEMP_BRANCH=RELEASE_${VERSION}_$(date +'%Y%m%d%H%M%S')
-git checkout -b ${TEMP_BRANCH}
+git add .
+git checkout --orphan=${TEMP_BRANCH}
 
 # untrack all files, and track the files that should be included in the published package
 git rm --cached -r .
