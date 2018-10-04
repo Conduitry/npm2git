@@ -22,18 +22,17 @@ read PKG_NAME PKG_VERSION < <(node -e '
 # determine current branch name, and create new temporary branch
 ORIG_BRANCH=$(git symbolic-ref --short HEAD)
 TEMP_BRANCH=RELEASE_${PKG_VERSION}_$(date +'%Y%m%d%H%M%S')
-git add .
 git checkout --orphan=${TEMP_BRANCH}
+git rm --cached -rf .
 
-# untrack all files, and track the files that should be included in the published package
-git rm --cached -r .
+# track the files that should be included in the published package
 npm pack
 git add -f $(tar tf ${PKG_NAME}-${PKG_VERSION}.tgz | cut -c 9-)
 rm ${PKG_NAME}-${PKG_VERSION}.tgz
 
 # commit and tag
 git commit -m "v${PKG_VERSION} @ ${ORIG_COMMIT}"
-git tag v${PKG_VERSION} -a -m "v${PKG_VERSION} @ ${ORIG_COMMIT}"
+git tag v${PKG_VERSION} -am "v${PKG_VERSION} @ ${ORIG_COMMIT}"
 
 # return to original state
 git reset ${ORIG_BRANCH}
