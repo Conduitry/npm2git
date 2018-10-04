@@ -10,13 +10,13 @@ COMMIT_ID="$(git rev-parse HEAD)"
 # extract package name and version from package.json, remove scripts.prepare
 ORIG_PKG="$(cat package.json)"
 read NAME VERSION < <(node -e '
-const fs = require("fs");
-const pkg = JSON.parse(fs.readFileSync("package.json"));
-if (pkg.scripts && pkg.scripts.prepare) {
-	delete pkg.scripts.prepare;
-	fs.writeFileSync("package.json", JSON.stringify(pkg, null, "\t") + "\n");
-}
-console.log(pkg.name + " " + pkg.version);
+	const fs = require("fs");
+	const pkg = JSON.parse(fs.readFileSync("package.json"));
+	if (pkg.scripts && pkg.scripts.prepare) {
+		delete pkg.scripts.prepare;
+		fs.writeFileSync("package.json", JSON.stringify(pkg, null, "\t") + "\n");
+	}
+	console.log(pkg.name + " " + pkg.version);
 ')
 
 # determine current branch name, and create new temporary branch
