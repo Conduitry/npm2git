@@ -7,16 +7,15 @@ cd $(git rev-parse --show-toplevel)
 # get commit id
 COMMIT_ID="$(git rev-parse HEAD)"
 
-# extract package name and version from package.json, remove devDependencies and scripts.prepare
+# extract package name and version from package.json, remove scripts.prepare
 ORIG_PKG="$(cat package.json)"
 read NAME VERSION < <(node -e '
 const fs = require("fs");
 const pkg = JSON.parse(fs.readFileSync("package.json"));
-delete pkg.devDependencies;
-if (pkg.scripts) {
+if (pkg.scripts && pkg.scripts.prepare) {
 	delete pkg.scripts.prepare;
+	fs.writeFileSync("package.json", JSON.stringify(pkg, null, "\t") + "\n");
 }
-fs.writeFileSync("package.json", JSON.stringify(pkg, null, "\t") + "\n");
 console.log(pkg.name + " " + pkg.version);
 ')
 
