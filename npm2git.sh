@@ -9,6 +9,7 @@ NAME=$(node -e 'console.log(require("./package.json").name)')
 VERSION=$(node -e 'console.log(require("./package.json").version)')
 
 # remove devDependencies and scripts.prepare
+ORIG_PKG="$(cat package.json)"
 node -e '
 const fs = require("fs");
 const pkg = JSON.parse(fs.readFileSync("package.json"));
@@ -38,5 +39,5 @@ git push origin v${VERSION}
 # return to original state
 git reset ${ORIG_BRANCH}
 git checkout ${ORIG_BRANCH}
-git checkout package.json
+echo "${ORIG_PKG}" > package.json
 git branch -D ${TEMP_BRANCH}
