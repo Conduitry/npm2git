@@ -31,10 +31,9 @@ npm pack
 git add -f $(tar tf ${NAME}-${VERSION}.tgz | cut -c 9-)
 rm ${NAME}-${VERSION}.tgz
 
-# commit, tag, push
+# commit and tag
 git commit -m "Release v${VERSION}"
 git tag v${VERSION} -a -m "v${VERSION}"
-git push origin v${VERSION}
 
 # return to original state
 git reset ${ORIG_BRANCH}
