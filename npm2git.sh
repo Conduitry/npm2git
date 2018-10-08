@@ -7,12 +7,9 @@ ORIG_COMMIT="$(git rev-parse HEAD)"
 # extract version from package.json, and remove scripts.prepare
 cp package.json package.json_orig
 PKG_VERSION="$(node -e '
-	const fs = require("fs");
-	const pkg = JSON.parse(fs.readFileSync("package.json"));
-	if (pkg.scripts && pkg.scripts.prepare) {
-		delete pkg.scripts.prepare;
-		fs.writeFileSync("package.json", JSON.stringify(pkg, null, "\t") + "\n");
-	}
+	const pkg = require("./package.json");
+	pkg.scripts && delete pkg.scripts.prepare;
+	require("fs").writeFileSync("package.json", JSON.stringify(pkg));
 	console.log(pkg.version);
 ')"
 
