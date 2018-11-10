@@ -33,7 +33,7 @@ git symbolic-ref HEAD "$ORIG_HEAD"
 git reset
 
 # tag commit
-git tag "v$PKG_VERSION-src" -am "v$PKG_VERSION-src"
+git tag "v$PKG_VERSION-src"
 git tag "v$PKG_VERSION" "$TEMP_BRANCH" -am "v$PKG_VERSION @ $ORIG_COMMIT"
 
 # delete temporary branch
