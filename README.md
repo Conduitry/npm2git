@@ -15,6 +15,7 @@ This shell script creates and tags an orphaned commit that includes only the fil
 1. Make sure you're ready to go. The `version` field in your `package.json` should already be incremented, and the `files` field should point to everything you want to publish.
 1. Run `npm2git.sh`. This creates the orphaned commit and tags it `vX.X.X`, but does not push it. Inspect the tag to make sure all seems well.
 1. Push the tag.
+1. Optionally, also push the `vX.X.X-src` tag, which points to the original source that the `vX.X.X` tag was built from.
 
 ## Installing from Git
 
