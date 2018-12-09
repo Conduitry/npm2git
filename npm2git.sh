@@ -10,9 +10,12 @@ ORIG_COMMIT="$(git rev-parse HEAD)"
 cp package.json package.json.bak
 PKG_VERSION="$(node -e '
 	const fs = require("fs");
-	const pkg = JSON.parse(fs.readFileSync("package.json"));
+	const str = fs.readFileSync("package.json").toString();
+	const m = str.match(/\n([\t ]+)/);
+	const indent = m ? m[1] : "\t";
+	const pkg = JSON.parse(str);
 	pkg.scripts && delete pkg.scripts.prepare;
-	fs.writeFileSync("package.json", JSON.stringify(pkg));
+	fs.writeFileSync("package.json", JSON.stringify(pkg, null, indent) + (str.endsWith("\n") ? "\n" : ""));
 	console.log(pkg.version);
 ')"
 
