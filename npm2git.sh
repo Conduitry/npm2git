@@ -2,6 +2,10 @@
 
 # git ready
 set -e
+C=; O=; S=; case "$1" in c) C=1 ;; cs) C=1; S=1 ;; o) O=1 ;; os) O=1; S=1 ;; *) echo "Usage: $0 c | cs | o | os
+  c = tag release as child of HEAD
+  o = tag release as orphan
+  s = tag HEAD as vX.X.X-src"; exit 1 ;; esac
 cd "$(git rev-parse --show-toplevel)"
 ORIG_HEAD="$(git symbolic-ref HEAD)"
 ORIG_COMMIT="$(git rev-parse HEAD)"
@@ -21,7 +25,8 @@ PKG_VERSION="$(node -e '
 
 # create new temporary branch
 TEMP_BRANCH="NPM2GIT-$PKG_VERSION-$(date +%Y%m%d%H%M%S)"
-git checkout --orphan="$TEMP_BRANCH"
+[ $C ] && git checkout -b "$TEMP_BRANCH"
+[ $O ] && git checkout --orphan "$TEMP_BRANCH"
 git rm --cached -rf .
 
 # commit the files that should be included in the published package
@@ -36,7 +41,7 @@ git symbolic-ref HEAD "$ORIG_HEAD"
 git reset
 
 # tag commit
-git tag "v$PKG_VERSION-src"
+[ $S ] && git tag "v$PKG_VERSION-src"
 git tag "v$PKG_VERSION" "$TEMP_BRANCH" -am "v$PKG_VERSION @ $ORIG_COMMIT"
 
 # delete temporary branch
