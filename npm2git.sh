@@ -32,7 +32,7 @@ git rm --cached -rf .
 # commit the files that should be included in the published package
 PKG_TAR="$(npm pack | tail -n 1)"
 tar tf "$PKG_TAR" | cut -c 9- | xargs -d '\n' git add -f
-git commit -m "v$PKG_VERSION @ $ORIG_COMMIT"
+git commit -nm "v$PKG_VERSION @ $ORIG_COMMIT"
 
 # return to original state
 rm "$PKG_TAR"
